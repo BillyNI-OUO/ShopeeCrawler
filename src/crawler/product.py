@@ -3,15 +3,17 @@ The object used to storage the information of item
 """
 class item:
 	
-	def __init__(self, itemid, shopid, name, item_rating):
+	def __init__(self, itemid, shopid, catid, name, item_rating, images):
 
 		self.itemid = itemid
 		self.shopid = shopid
+		self.catid = catid
 		self.name = name
 		self.item_rating = item_rating
+		self.images = images
 
 	def __str__(self):
-		return f'itemid : {self.itemid}\nshopod : {self.shopid}\nname : {self.name}\nitem_rating : \n{self.item_rating}'
+		return f'itemid : {self.itemid}\nshopid : {self.shopid}\nname : {self.name}\nitem_rating : \n{self.item_rating}\nimages : {self.images}'
 
 
 class item_rating:
