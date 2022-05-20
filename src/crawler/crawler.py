@@ -31,9 +31,9 @@ def GetItem(catid):
 		except Exception as e:
 			sys.stderr.write(str(e)+"\n")
 			return itemsList
-		return itemsList
+	return itemsList
 
-def GetComment(shopid, itemid, count=5000):
+def GetComment(shopid, itemid, count=10000):
 	s = requests.Session()
 	commentList = []
 	for i in range(int(count/50)):
@@ -45,6 +45,7 @@ def GetComment(shopid, itemid, count=5000):
 				commentList.append(comment(i['rating_star'], i['cmtid'], i['author_username'], i['author_shopid'], i['comment'], i['mtime'], i['itemid'], i['shopid']))
 		except Exception as e:
 			sys.stderr.write(str(e)+"\n")
+			return commentList
 	return commentList
 
 def GetCategoryTree():
@@ -58,4 +59,6 @@ def GetCategoryTree():
 		for j in i['children']:
 			children.append(category(j['catid'], j['parent_catid'], j['name'], j['display_name'], j['level'], j['children']))
 		CategoryList.append(category(i['catid'], i['parent_catid'], i['name'], i['display_name'], i['level'], children))
+		for j in children:
+			CategoryList.append(j)
 	return CategoryList	

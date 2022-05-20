@@ -64,7 +64,7 @@ class connector:
 			rating_star INT,
 			cmtid BIGINT UNSIGNED NOT NULL,
 			author_username TEXT NOT NULL,
-			author_shopid BIGINT UNSIGNED NOT NULL,
+			author_shopid BIGINT UNSIGNED,
 			comment TEXT,
 			itemid BIGINT UNSIGNED NOT NULL,
 			shopid BIGINT UNSIGNED NOT NULL,
@@ -166,6 +166,7 @@ class connector:
 				text = 'NULL'
 			if author_username == None:
 				author_username = 'NULL'
+				comment.author_shopid = 'NULL'
 			sql = f"\
 				INSERT INTO comments\
 				(rating_star, cmtid, author_username, author_shopid, comment, itemid, shopid)\

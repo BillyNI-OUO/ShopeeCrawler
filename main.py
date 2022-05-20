@@ -86,8 +86,11 @@ con = connector()
 con.init_db()
 
 clist = crawler.GetCategoryTree()
-itemlist = crawler.GetItem(clist[0].catid)
+itemlist = []
+for cat in clist[1:3]:    
+    itemlist.extend(crawler.GetItem(cat.catid))
 
+    
 for item in itemlist:
     con.insert_item(item)
     print(item)
