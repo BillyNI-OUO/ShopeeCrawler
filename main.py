@@ -80,7 +80,7 @@ for i in data["items"]:
 """
 
 
-
+"""
 con = connector()
 
 con.init_db()
@@ -97,3 +97,8 @@ for item in itemlist:
     comlist = crawler.GetComment(item.shopid, item.itemid)
     for comment in comlist:
         con.insert_comment(comment)
+"""
+
+con = connector()
+lastId = 1000
+con.text_classify(lastId)

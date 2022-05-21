@@ -184,3 +184,67 @@ class connector:
 				c.close()
 				return success
 		return success
+
+	def query_comments(self, field, predicate = None):
+		"""
+		Query place from comments
+		parameter:
+		field		: target field
+		predicate	: predicate
+		"""	
+		c = self.con.cursor()
+		sql = f"SELECT {field if field == '*' else ', '.join(field)} from comments {predicate if predicate != None else ''}"
+		try:
+			c.execute(sql)
+			resultSet = c.fetchall()
+		except Exception as e:
+			sys.stderr.write(str(e)+"\n")
+			resultSet = None
+		finally:
+			c.close()
+		return resultSet
+
+
+
+	def text_classify(self, lastId):
+		"""
+		Classified the review
+		Parameter:
+		lastId : the last classified review's id
+		"""
+		c = self.con.cursor()
+		try:
+			c.execute(f"""
+					INSERT INTO `reviews_aspect`
+					(`id`, `itemid`)
+					SELECT `comments`.`id`, `comments`.`itemid`
+					FROM `comments`
+					WHERE 
+					`comments`.`id` > {lastId}
+					AND `comments`.`comment` IS NOT NULL
+					AND `comments`.`comment` NOT LIKE "(由 Google 提供翻譯)%"
+					;
+			""")
+			self.con.commit()
+			
+			def is_aspect(aspect, sentence):
+				for keyword in constants.KEYWORDS[aspect]:
+					if keyword in sentence:
+						return True
+				return False
+
+			results = self.query_comments(['id', 'itemid', 'comment'], f'WHERE comments.id > {lastId}')
+			
+			for comment in results:
+				for aspect in constants.ASPECTS:	
+					if is_aspect(aspect, comment[2]):
+						c.execute(f"""
+							UPDATE `reviews_aspect`
+							SET reviews_aspect.is_{aspect} = 1
+							WHERE reviews_aspect.id = {comment[0]}""")
+						self.con.commit()
+
+		except Exception as e:
+			sys.stderr.write(str(e)+"\n")
+		finally:
+			c.close()
