@@ -248,3 +248,19 @@ class connector:
 			sys.stderr.write(str(e)+"\n")
 		finally:
 			c.close()
+
+	def get_lastId(self):
+		"""
+		Get the last classified comment's id
+		"""
+		c = self.con.cursor()
+		lastId = None
+		try:
+			c.execute(f"SELECT `id` FROM `reviews_aspect` ORDER BY `id` DESC LIMIT 1")
+			lastId = c.fetchall()
+		except Exception as e:
+			sys.stderr.write(str(e)+"\n")
+		finally:
+			self.con.commit()
+			c.close()
+			return	lastId
